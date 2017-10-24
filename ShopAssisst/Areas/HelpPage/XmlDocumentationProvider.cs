@@ -5,9 +5,9 @@ using System.Reflection;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Xml.XPath;
-using ShopAssisst.Areas.HelpPage.ModelDescriptions;
+using ShopAssisst2.Areas.HelpPage.ModelDescriptions;
 
-namespace ShopAssisst.Areas.HelpPage
+namespace ShopAssisst2.Areas.HelpPage
 {
     /// <summary>
     /// A custom <see cref="IDocumentationProvider"/> that reads the API documentation from an XML documentation file.

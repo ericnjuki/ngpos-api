@@ -1,4 +1,4 @@
-namespace ShopAssisst.Areas.HelpPage.ModelDescriptions
+namespace ShopAssisst2.Areas.HelpPage.ModelDescriptions
 {
     public class EnumValueDescription
     {

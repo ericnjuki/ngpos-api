@@ -1,6 +1,6 @@
 using System;
 
-namespace ShopAssisst.Areas.HelpPage.ModelDescriptions
+namespace ShopAssisst2.Areas.HelpPage.ModelDescriptions
 {
     /// <summary>
     /// Describes a type model.
