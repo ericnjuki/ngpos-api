@@ -8,23 +8,24 @@ using Module = Autofac.Module;
 using ShopAssist2.Business.Interfaces;
 
 namespace ShopAssist2 {
-    public class DataModule :Module {
+    public class DataModule : Module {
 
 
         public DataModule() {
 
         }
 
-        protected override void Load( ContainerBuilder builder )
-        {
+        protected override void Load(ContainerBuilder builder) {
 
             builder.RegisterType<ShopAssist2Context>().InstancePerRequest();
             builder.RegisterType<UserService>().As<IUserService>().InstancePerRequest();
+            builder.RegisterType<TransactionService>().As<ITransactionService>().InstancePerRequest();
+            builder.RegisterType<ItemService>().As<ItemService>().InstancePerRequest();
             //builder.Register( c => new UserService() ).As<IUserService>().InstancePerRequest();
 
             builder.RegisterInstance(AutoMapperConfig.GetMapper());
 
-            base.Load( builder );
+            base.Load(builder);
         }
     }
 }

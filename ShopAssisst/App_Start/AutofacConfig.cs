@@ -3,12 +3,9 @@ using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
 
-namespace ShopAssisst2
-{
-    public class AutofacConfig
-    {
-        internal static void ConfigureContainer()
-        {
+namespace ShopAssisst2 {
+    public class AutofacConfig {
+        internal static void ConfigureContainer() {
             var builder = new ContainerBuilder();
 
             // Get your HttpConfiguration.

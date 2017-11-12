@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ShopAssist2.Common.Enums;
 
-namespace ShopAssist2.Common.Entities
-{
-    public class Transaction
-    {
+namespace ShopAssist2.Common.Entities {
+    public class Transaction {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TransactionId { get; set; }
@@ -17,13 +16,11 @@ namespace ShopAssist2.Common.Entities
         [Required]
         public DateTime Date { get; set; }
 
-        [Required]
-        public Item Commodity { get; set; }
 
+        //Complex Property Items
         [Required]
-        public int Quantity { get; set; }
+        public virtual ICollection<TransactionItem> TransactionItems { get; set; }
 
-        [Required]
-        public int Amount { get; set; }
+
     }
 }

@@ -1,21 +1,21 @@
 ﻿using System;
-using ShopAssist2.Common.Entities;
-using ShopAssist2.Common.Enums;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
-namespace ShopAssist2.Common.DataTransferObjects
-{
-    public class TransactionDto
-    {
+namespace ShopAssist2.Common.DataTransferObjects {
+    [DataContract(Name = "transaction")]
+    public class TransactionDto {
+        [DataMember(Name = "transactionId")]
         public int TransactionId { get; set; }
 
-        public TransactionType TransactionType { get; set; }
+        [DataMember(Name = "transactionType")]
+        public int TransactionType { get; set; }
 
+        [DataMember(Name = "date")]
         public DateTime Date { get; set; }
 
-        public Item Commodity { get; set; }
+        [DataMember(Name = "items")]
+        public ICollection<ItemDto> Items { get; set; }
 
-        public int Quantity { get; set; }
-
-        public int Amount { get; set; }
     }
 }

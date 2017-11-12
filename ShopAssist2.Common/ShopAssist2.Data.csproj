@@ -77,11 +77,14 @@
     <Compile Include="DataTransferObjects\ItemDto.cs" />
     <Compile Include="DataTransferObjects\StockDto.cs" />
     <Compile Include="DataTransferObjects\TransactionDto.cs" />
+    <Compile Include="DataTransferObjects\TransactionItemDto.cs" />
+    <Compile Include="DataTransferObjects\TransactionStatistics.cs" />
     <Compile Include="DataTransferObjects\UserDto.cs" />
     <Compile Include="Entities\Company.cs" />
     <Compile Include="Entities\Item.cs" />
     <Compile Include="Entities\Stock.cs" />
     <Compile Include="Entities\Transaction.cs" />
+    <Compile Include="Entities\TransactionItem.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Enums\TransactionType.cs" />
     <Compile Include="Persistence\ShopAssist2Context.cs" />
