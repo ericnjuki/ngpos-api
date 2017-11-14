@@ -9,6 +9,9 @@ namespace ShopAssist2.Common.DataTransferObjects {
         [DataMember(Name = "itemName")]
         public string ItemName { get; set; }
 
+        [DataMember(Name = "unit")]
+        public string Unit { get; set; }
+
         [DataMember(Name = "quantity")]
         public int Quantity { get; set; }
 

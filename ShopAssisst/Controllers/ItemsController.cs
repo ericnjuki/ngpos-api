@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
 using Microsoft.Web.Http;
 using ShopAssist2.Business.Services;
+using ShopAssist2.Common.DataTransferObjects;
 
 namespace ShopAssisst.Controllers {
     [ApiVersion("1.0"), RoutePrefix("api/v{version}/items")]
@@ -49,6 +51,19 @@ namespace ShopAssisst.Controllers {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 
+        }
+
+        [HttpPost, Route("p")]
+        public IHttpActionResult PostItem( ICollection<ItemDto> items) {
+            try {
+                if(items == null) {
+                    return Content(HttpStatusCode.BadRequest, "Cannot post null");
+                }
+                _itemService.AddManyItems(items);
+                return Ok();
+            } catch(Exception e) {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
         }
     }
 }

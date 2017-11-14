@@ -9,6 +9,8 @@ namespace ShopAssist2.Business.Interfaces {
 
         void AddItem(ItemDto item);
 
+        void AddManyItems(ICollection<ItemDto> items);
+
         void UpdatItem(ItemDto item);
     }
 }

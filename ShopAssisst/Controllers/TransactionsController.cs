@@ -31,9 +31,9 @@ namespace ShopAssisst.Controllers {
         }
         [HttpGet, Route("g/stats")]
         //public IHttpActionResult GetTransactionStats(DateTime date)
-        public IHttpActionResult GetTransactionStats() {
+        public IHttpActionResult GetTransactionStats(string forYear) {
             try {
-                var transactions = _transactionService.GetStats(DateTime.Today);
+                var transactions = _transactionService.GetStats(new DateTime(Int32.Parse(forYear)));
                 if(transactions == null) {
                     return Content(HttpStatusCode.NoContent, "");
 

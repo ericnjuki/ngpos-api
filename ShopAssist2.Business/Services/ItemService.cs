@@ -28,6 +28,13 @@ namespace ShopAssist2.Business.Services {
             _ctx.SaveChanges();
         }
 
+        public void AddManyItems(ICollection<ItemDto> items) {
+            foreach(var itemDto in items) {
+                _ctx.StockItems.Add(_mapper.Map<Item>(itemDto));
+            }
+            _ctx.SaveChanges();
+        }
+
         public void UpdatItem(ItemDto item) {
             var itemEntity = _mapper.Map<Item>(item);
             _ctx.Entry(itemEntity).State = System.Data.Entity.EntityState.Modified;

@@ -87,12 +87,22 @@
     <Compile Include="Entities\TransactionItem.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Enums\TransactionType.cs" />
+    <Compile Include="Migrations\201711131029062_InitialCreate.cs" />
+    <Compile Include="Migrations\201711131029062_InitialCreate.Designer.cs">
+      <DependentUpon>201711131029062_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Persistence\ShopAssist2Context.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201711131029062_InitialCreate.resx">
+      <DependentUpon>201711131029062_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

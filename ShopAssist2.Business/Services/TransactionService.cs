@@ -41,7 +41,7 @@ namespace ShopAssist2.Business.Services {
 
         public List<TransactionStatistics> GetStats(DateTime date) {
             var transacStatsList = new List<TransactionStatistics>();
-            var transacs = _ctx.Transactions.Where(t => t.Date == date).ToList();
+            var transacs = _ctx.Transactions.Where(t => t.Date.Year == date.Year).ToList();
 
             //List<IEnumerable<Transaction>> queryList = new List<IEnumerable<Transaction>>();
 
@@ -118,6 +118,7 @@ namespace ShopAssist2.Business.Services {
                     // only the properties i want updated
                     itemToAdd.Quantity -= item.Quantity;
                     _ctx.Entry(itemToAdd).State = System.Data.Entity.EntityState.Modified;
+                    _ctx.Entry(itemToAdd).Property(x => x.Unit).IsModified = false;
                     _ctx.Entry(itemToAdd).Property(x => x.SellingPrice).IsModified = false;
                     _ctx.Entry(itemToAdd).Property(x => x.PurchaseCost).IsModified = false;
 
@@ -130,9 +131,11 @@ namespace ShopAssist2.Business.Services {
                     _ctx.TransactionItems.Add(transactionItem);
 
                 } else {
-                    // if purchase, add quantity, leave all others intact
+                    // if purchase, add quantity, update purchase field, leave all others intact
                     itemToAdd.Quantity += item.Quantity;
+                    itemToAdd.PurchaseCost += item.PurchaseCost;
                     _ctx.Entry(itemToAdd).State = System.Data.Entity.EntityState.Modified;
+                    _ctx.Entry(itemToAdd).Property(x => x.Unit).IsModified = false;
                     _ctx.Entry(itemToAdd).Property(x => x.SellingPrice).IsModified = false;
                     _ctx.Entry(itemToAdd).Property(x => x.PurchaseCost).IsModified = false;
 

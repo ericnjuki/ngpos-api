@@ -12,6 +12,8 @@ namespace ShopAssist2.Common.Entities {
         [MaxLength(64)]
         public string ItemName { get; set; }
 
+        public string Unit { get; set; }
+
         [Required]
         public int Quantity { get; set; }
 
