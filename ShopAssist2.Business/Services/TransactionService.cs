@@ -59,9 +59,9 @@ namespace ShopAssist2.Business.Services {
                         switch(transactionOfMonth.TransactionType) {
                             case TransactionType.Sale:
                                 transacItemlyStats.Sales += transactionItem.Amount;
+                                transacItemlyStats.Purchases += transactionItem.Item.PurchaseCost * transactionItem.Quantity;
                                 break;
                             case TransactionType.Purchase:
-                                transacItemlyStats.Purchases += transactionItem.Amount;
                                 break;
                             default:
                                 throw new Exception("Invalid TransactionType");

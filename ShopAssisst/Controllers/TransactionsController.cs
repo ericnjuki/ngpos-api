@@ -33,7 +33,7 @@ namespace ShopAssisst.Controllers {
         //public IHttpActionResult GetTransactionStats(DateTime date)
         public IHttpActionResult GetTransactionStats(string forYear) {
             try {
-                var transactions = _transactionService.GetStats(new DateTime(Int32.Parse(forYear)));
+                var transactions = _transactionService.GetStats(new DateTime(int.Parse(forYear), DateTime.Today.Month, DateTime.Today.Day));
                 if(transactions == null) {
                     return Content(HttpStatusCode.NoContent, "");
 
