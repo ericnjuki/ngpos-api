@@ -54,13 +54,39 @@ namespace ShopAssisst.Controllers {
         }
 
         [HttpPost, Route("p")]
-        public IHttpActionResult PostItem( ICollection<ItemDto> items) {
+        public IHttpActionResult PostItems(ICollection<ItemDto> items) {
             try {
                 if(items == null) {
                     return Content(HttpStatusCode.BadRequest, "Cannot post null");
                 }
-                _itemService.AddManyItems(items);
+                _itemService.AddItems(items);
                 return Ok();
+            } catch(Exception e) {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        [HttpPut, Route("u")]
+        public IHttpActionResult UpdateItems(ICollection<ItemDto> updatedItems) {
+            try {
+                if(updatedItems.Count <= 0) {
+                    return Content(HttpStatusCode.Accepted, "Zero records updated though");
+                }
+                _itemService.UpdateItems(updatedItems);
+                return Ok();
+            } catch(Exception e) {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        [HttpDelete, Route("d")]
+        public IHttpActionResult DeleteItems(ICollection<int> itemsToDelete) {
+            try {
+                if(itemsToDelete.Count <= 0) {
+                    return Content(HttpStatusCode.Accepted, "Zero records deleted though");
+                }
+                var newItems = _itemService.DeleteItems(itemsToDelete);
+                return Ok(newItems);
             } catch(Exception e) {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }

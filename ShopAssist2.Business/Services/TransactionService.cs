@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using AutoMapper;
 using ShopAssist2.Common.DataTransferObjects;
 using ShopAssist2.Common.Entities;
@@ -21,16 +22,29 @@ namespace ShopAssist2.Business.Services {
             if(!includeItems)
                 return _ctx.Transactions.ToList().Select(t => _mapper.Map<TransactionDto>(t));
 
-            var transacs = _ctx.Transactions.ToList();
-            var transacDtos = transacs.Select(t => _mapper.Map<TransactionDto>(t)).ToList();
+            var transacs = _ctx.Transactions.Include(t => t.TransactionItems.Select(ti => ti.Item)).ToList();
+            var transacDtos = transacs
+                .Select(t => _mapper.Map<TransactionDto>(t))
+                .ToList();
+            //var itemDtos = new List<ItemDto>();
+            for(var i = 0; i <= transacs.Count - 1; i++) {
+                //itemDtos.Clear(); 
+                transacDtos[i].Items = new List<ItemDto>();
+                for(var j = 0; j <= transacs[i].TransactionItems.Count - 1; j++) {
+                    transacs[i].TransactionItems.ToList()[j].Item.Quantity = transacs[i].TransactionItems.ToList()[j].Quantity;
+                    var itemDto = _mapper.Map<ItemDto>(transacs[i].TransactionItems.ToList()[j].Item);
+                    //itemDtos.Add(itemDto);
+                    transacDtos[i].Items.Add(itemDto);
+                }
+            }
 
             // TO-DO: linqify this:
-            for(var i = 0; i <= transacDtos.Count - 1; i++) {
-                var items = new List<ItemDto>();
-                if(transacDtos[i].TransactionId != transacs[i].TransactionId) continue;
-                items.AddRange(transacs[i].TransactionItems.Select(transactionItem => _mapper.Map<ItemDto>(transactionItem.Item)));
-                transacDtos[i].Items = items;
-            }
+            //for(var i = 0; i <= transacDtos.Count - 1; i++) {
+            //    var items = new List<ItemDto>();
+            //    if(transacDtos[i].TransactionId != transacs[i].TransactionId) continue;
+            //    items.AddRange(transacs[i].TransactionItems.Select(transactionItem => _mapper.Map<ItemDto>(transactionItem.Item)));
+            //    transacDtos[i].Items = items;
+            //}
             return transacDtos;
         }
         public TransactionDto GetByTransactionId(int transactionId) {
@@ -58,25 +72,34 @@ namespace ShopAssist2.Business.Services {
                         var transacItemlyStats = new TransactionStatistics();
                         switch(transactionOfMonth.TransactionType) {
                             case TransactionType.Sale:
-                                transacItemlyStats.Sales += transactionItem.Amount;
-                                transacItemlyStats.Purchases += transactionItem.Item.PurchaseCost * transactionItem.Quantity;
+                                // profit/loss is only calculated duting a sale
+                                // this is done by getting the difference between an item's
+                                // buying and selling price
+                                if(transactionItem.Item.Deleted <= 0) {
+                                    transacItemlyStats.Sales += transactionItem.Amount;
+                                    transacItemlyStats.PurchaseCost += transactionItem.Item.PurchaseCost * transactionItem.Quantity;
+                                }
                                 break;
                             case TransactionType.Purchase:
+                                // this is to show how much was spent buying stuff
+                                // operational cost, i think
+                                transacItemlyStats.Purchases += transactionItem.Amount;
                                 break;
                             default:
                                 throw new Exception("Invalid TransactionType");
                         }
                         // for each transactionItem, add its stats to the containing transaction's stats
                         transaclyStats.Sales += transacItemlyStats.Sales;
+                        transaclyStats.PurchaseCost += transacItemlyStats.PurchaseCost;
                         transaclyStats.Purchases += transacItemlyStats.Purchases;
                     }
                     // for each transaction, add its stats to that month's transaction stats
                     monthlyTransacStats.Sales += transaclyStats.Sales;
+                    monthlyTransacStats.PurchaseCost += transaclyStats.PurchaseCost;
                     monthlyTransacStats.Purchases += transaclyStats.Purchases;
-
                 }
                 // calculate profit for that month, and add that month's stats to list of monthly stats
-                monthlyTransacStats.ProfitLoss = monthlyTransacStats.Sales - monthlyTransacStats.Purchases;
+                monthlyTransacStats.ProfitLoss = monthlyTransacStats.Sales - monthlyTransacStats.PurchaseCost;
                 transacStatsList.Add(monthlyTransacStats);
 
             }
@@ -87,8 +110,25 @@ namespace ShopAssist2.Business.Services {
         public void RecordTransaction(TransactionDto transaction) {
             // get the transaction entity
             var transac = _mapper.Map<Transaction>(transaction);
+            var uniqueDictionary = new Dictionary<int, ItemDto>();
+            var itemsList = transaction.Items.ToList();
 
-            foreach(var item in transaction.Items) {
+            foreach(var itemDto in itemsList) {
+                if(itemDto.ItemId < 0) {
+                    var thisItem = _ctx.StockItems.FirstOrDefault(i => i.ItemName == itemDto.ItemName);
+                    if(thisItem == null) { throw new Exception("This is a real problem here"); }
+                    itemDto.ItemId = thisItem.ItemId;
+                }
+
+                if(uniqueDictionary.ContainsKey(itemDto.ItemId)) {
+                    uniqueDictionary[itemDto.ItemId].Quantity += itemDto.Quantity;
+                    continue;
+                }
+                uniqueDictionary.Add(itemDto.ItemId, itemDto);
+            }
+
+            Console.Write('s');
+            foreach(var item in uniqueDictionary.Values.ToList()) {
                 var transactionItem = new TransactionItem { Transaction = transac };
                 // attempt to look for item in db
                 var itemToAdd = _ctx.StockItems.FirstOrDefault(i => i.ItemName == item.ItemName);
@@ -117,7 +157,8 @@ namespace ShopAssist2.Business.Services {
                     // TO-DO: find a better way to do this, maybe a partial model that updates
                     // only the properties i want updated
                     itemToAdd.Quantity -= item.Quantity;
-                    _ctx.Entry(itemToAdd).State = System.Data.Entity.EntityState.Modified;
+                    _ctx.Entry(itemToAdd).State = EntityState.Modified;
+                    // do i need these?
                     _ctx.Entry(itemToAdd).Property(x => x.Unit).IsModified = false;
                     _ctx.Entry(itemToAdd).Property(x => x.SellingPrice).IsModified = false;
                     _ctx.Entry(itemToAdd).Property(x => x.PurchaseCost).IsModified = false;
@@ -134,7 +175,7 @@ namespace ShopAssist2.Business.Services {
                     // if purchase, add quantity, update purchase field, leave all others intact
                     itemToAdd.Quantity += item.Quantity;
                     itemToAdd.PurchaseCost += item.PurchaseCost;
-                    _ctx.Entry(itemToAdd).State = System.Data.Entity.EntityState.Modified;
+                    _ctx.Entry(itemToAdd).State = EntityState.Modified;
                     _ctx.Entry(itemToAdd).Property(x => x.Unit).IsModified = false;
                     _ctx.Entry(itemToAdd).Property(x => x.SellingPrice).IsModified = false;
                     _ctx.Entry(itemToAdd).Property(x => x.PurchaseCost).IsModified = false;
@@ -151,6 +192,17 @@ namespace ShopAssist2.Business.Services {
 
             _ctx.Transactions.Add(transac);
             _ctx.SaveChanges();
+        }
+
+        public IEnumerable<TransactionDto> DeleteTransactions(ICollection<int> transactionIds) {
+            List<Transaction> transactions = _ctx.Transactions.Where(t => transactionIds.Contains(t.TransactionId)).ToList();
+            foreach(var transaction in transactions) {
+                _ctx.TransactionItems.RemoveRange(transaction.TransactionItems);
+                _ctx.SaveChanges();
+                _ctx.Entry(transaction).State = EntityState.Deleted;
+            }
+            _ctx.SaveChanges();
+            return GetAll(true);
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using ShopAssist2.Common.Entities;
+using ShopAssist2.Common.Migrations;
 
 namespace ShopAssist2.Common.Persistence {
     public class ShopAssist2Context : DbContext {
         public ShopAssist2Context() : base("name=ShopAssist2ConnectionStringLocal") {
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ShopAssist2Context>());
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ShopAssist2Context, Configuration>());
         }
 
         public DbSet<Company> Companies { get; set; }

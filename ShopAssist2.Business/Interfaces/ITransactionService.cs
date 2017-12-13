@@ -11,5 +11,6 @@ namespace ShopAssist2.Business.Interfaces {
         List<TransactionStatistics> GetStats(DateTime date);
 
         void RecordTransaction(TransactionDto transaction);
+        IEnumerable<TransactionDto> DeleteTransactions(ICollection<int> transactions);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Web.Http;
 using Microsoft.Web.Http;
@@ -70,6 +71,18 @@ namespace ShopAssisst.Controllers {
                 return Content(HttpStatusCode.InternalServerError, e.Message);
             }
 
+        }
+
+        [HttpDelete, Route("d")]
+        public IHttpActionResult DeleteTransactions(ICollection<int> transactions) {
+            try {
+                if(transactions.Count <= 0) {
+                    return Content(HttpStatusCode.BadRequest, "Cannot post null");
+                }
+                return Ok(_transactionService.DeleteTransactions(transactions));
+            } catch(Exception e) {
+                return Content(HttpStatusCode.InternalServerError, e.Message);
+            }
         }
     }
 }

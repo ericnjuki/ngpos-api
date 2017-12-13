@@ -9,8 +9,10 @@ namespace ShopAssist2.Business.Interfaces {
 
         void AddItem(ItemDto item);
 
-        void AddManyItems(ICollection<ItemDto> items);
+        void AddItems(ICollection<ItemDto> items);
 
-        void UpdatItem(ItemDto item);
+        void UpdateItems(ICollection<ItemDto> items);
+
+        IEnumerable<ItemDto> DeleteItems(ICollection<int> items);
     }
 }

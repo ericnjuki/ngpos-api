@@ -9,8 +9,7 @@ namespace ShopAssist2.Common.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
-            ContextKey = "ShopAssist2.Common.Persistence.ShopAssist2Context";
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(ShopAssist2.Common.Persistence.ShopAssist2Context context)

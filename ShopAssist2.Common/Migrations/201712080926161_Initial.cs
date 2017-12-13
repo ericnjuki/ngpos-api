@@ -3,7 +3,7 @@ namespace ShopAssist2.Common.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialCreate : DbMigration
+    public partial class Initial : DbMigration
     {
         public override void Up()
         {
@@ -27,6 +27,8 @@ namespace ShopAssist2.Common.Migrations
                         Quantity = c.Int(nullable: false),
                         PurchaseCost = c.Int(nullable: false),
                         SellingPrice = c.Int(nullable: false),
+                        Deleted = c.Int(nullable: false),
+                        DeleteDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.ItemId);
             
