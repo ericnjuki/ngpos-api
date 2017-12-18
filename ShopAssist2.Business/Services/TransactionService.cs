@@ -32,6 +32,15 @@ namespace ShopAssist2.Business.Services {
                 transacDtos[i].Items = new List<ItemDto>();
                 for(var j = 0; j <= transacs[i].TransactionItems.Count - 1; j++) {
                     transacs[i].TransactionItems.ToList()[j].Item.Quantity = transacs[i].TransactionItems.ToList()[j].Quantity;
+                    if (transacs[i].TransactionType == TransactionType.Sale) {
+                        transacs[i].TransactionItems.ToList()[j].Item.SellingPrice =
+                            transacs[i].TransactionItems.ToList()[j].Amount /
+                            transacs[i].TransactionItems.ToList()[j].Quantity;
+                    } else {
+                        transacs[i].TransactionItems.ToList()[j].Item.PurchaseCost =
+                            transacs[i].TransactionItems.ToList()[j].Amount /
+                            transacs[i].TransactionItems.ToList()[j].Quantity;
+                    }
                     var itemDto = _mapper.Map<ItemDto>(transacs[i].TransactionItems.ToList()[j].Item);
                     //itemDtos.Add(itemDto);
                     transacDtos[i].Items.Add(itemDto);
