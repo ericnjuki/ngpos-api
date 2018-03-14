@@ -21,5 +21,8 @@ namespace ShopAssist2.Common.DataTransferObjects {
         [DataMember(Name = "sellingPrice")]
         public int SellingPrice { get; set; }
 
+        [DataMember(Name = "aliases")]
+        public string Aliases { get; set; }
+
     }
 }

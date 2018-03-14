@@ -87,9 +87,9 @@
     <Compile Include="Entities\TransactionItem.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Enums\TransactionType.cs" />
-    <Compile Include="Migrations\201712080926161_Initial.cs" />
-    <Compile Include="Migrations\201712080926161_Initial.Designer.cs">
-      <DependentUpon>201712080926161_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201803061008190_InitialCreate.cs" />
+    <Compile Include="Migrations\201803061008190_InitialCreate.Designer.cs">
+      <DependentUpon>201803061008190_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Persistence\ShopAssist2Context.cs" />
@@ -100,8 +100,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201712080926161_Initial.resx">
-      <DependentUpon>201712080926161_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201803061008190_InitialCreate.resx">
+      <DependentUpon>201803061008190_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

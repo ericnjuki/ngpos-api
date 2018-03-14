@@ -16,9 +16,9 @@ namespace ShopAssisst.Controllers {
 
         }
         [HttpGet, Route("g")]
-        public IHttpActionResult GetAllTransactions(bool includeItems = false) {
+        public IHttpActionResult GetAllTransactions(bool includeItems = false, DateTime forDate = new DateTime()) {
             try {
-                var transactions = _transactionService.GetAll(includeItems);
+                var transactions = _transactionService.GetAll(includeItems, forDate);
                 if(transactions == null) {
                     return Content(HttpStatusCode.NoContent, "");
 
@@ -31,7 +31,6 @@ namespace ShopAssisst.Controllers {
 
         }
         [HttpGet, Route("g/stats")]
-        //public IHttpActionResult GetTransactionStats(DateTime date)
         public IHttpActionResult GetTransactionStats(string forYear) {
             try {
                 var transactions = _transactionService.GetStats(new DateTime(int.Parse(forYear), DateTime.Today.Month, DateTime.Today.Day));

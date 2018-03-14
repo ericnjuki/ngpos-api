@@ -18,21 +18,22 @@ namespace ShopAssist2.Business.Services {
             _ctx = ctx;
             _mapper = mapper;
         }
-        public IEnumerable<TransactionDto> GetAll(bool includeItems) {
+        public IEnumerable<TransactionDto> GetAll(bool includeItems, DateTime forDate) {
             if(!includeItems)
                 return _ctx.Transactions.ToList().Select(t => _mapper.Map<TransactionDto>(t));
 
-            var transacs = _ctx.Transactions.Include(t => t.TransactionItems.Select(ti => ti.Item)).ToList();
+            var transacs = _ctx.Transactions
+                .Where(tr => tr.Date.Year == forDate.Year)
+                .Where(tr => tr.Date.Month == forDate.Month)
+                .Include(tr => tr.TransactionItems.Select(ti => ti.Item)).ToList();
             var transacDtos = transacs
                 .Select(t => _mapper.Map<TransactionDto>(t))
                 .ToList();
-            //var itemDtos = new List<ItemDto>();
             for(var i = 0; i <= transacs.Count - 1; i++) {
-                //itemDtos.Clear(); 
                 transacDtos[i].Items = new List<ItemDto>();
                 for(var j = 0; j <= transacs[i].TransactionItems.Count - 1; j++) {
                     transacs[i].TransactionItems.ToList()[j].Item.Quantity = transacs[i].TransactionItems.ToList()[j].Quantity;
-                    if (transacs[i].TransactionType == TransactionType.Sale) {
+                    if(transacs[i].TransactionType == TransactionType.Sale) {
                         transacs[i].TransactionItems.ToList()[j].Item.SellingPrice =
                             transacs[i].TransactionItems.ToList()[j].Amount /
                             transacs[i].TransactionItems.ToList()[j].Quantity;
@@ -42,18 +43,9 @@ namespace ShopAssist2.Business.Services {
                             transacs[i].TransactionItems.ToList()[j].Quantity;
                     }
                     var itemDto = _mapper.Map<ItemDto>(transacs[i].TransactionItems.ToList()[j].Item);
-                    //itemDtos.Add(itemDto);
                     transacDtos[i].Items.Add(itemDto);
                 }
             }
-
-            // TO-DO: linqify this:
-            //for(var i = 0; i <= transacDtos.Count - 1; i++) {
-            //    var items = new List<ItemDto>();
-            //    if(transacDtos[i].TransactionId != transacs[i].TransactionId) continue;
-            //    items.AddRange(transacs[i].TransactionItems.Select(transactionItem => _mapper.Map<ItemDto>(transactionItem.Item)));
-            //    transacDtos[i].Items = items;
-            //}
             return transacDtos;
         }
         public TransactionDto GetByTransactionId(int transactionId) {
@@ -65,9 +57,6 @@ namespace ShopAssist2.Business.Services {
         public List<TransactionStatistics> GetStats(DateTime date) {
             var transacStatsList = new List<TransactionStatistics>();
             var transacs = _ctx.Transactions.Where(t => t.Date.Year == date.Year).ToList();
-
-            //List<IEnumerable<Transaction>> queryList = new List<IEnumerable<Transaction>>();
-
 
             for(var i = 1; i <= 12; i++) {
                 var monthlyTransacStats = new TransactionStatistics {
@@ -211,7 +200,7 @@ namespace ShopAssist2.Business.Services {
                 _ctx.Entry(transaction).State = EntityState.Deleted;
             }
             _ctx.SaveChanges();
-            return GetAll(true);
+            return GetAll(true, new DateTime());
         }
     }
 }

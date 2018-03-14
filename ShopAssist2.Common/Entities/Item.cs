@@ -24,6 +24,8 @@ namespace ShopAssist2.Common.Entities {
         [Required]
         public int SellingPrice { get; set; }
 
+        public string Aliases { get; set; }
+
         [Required]
         public int Deleted { get; set; }
 

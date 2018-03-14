@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using AutoMapper;
 using ShopAssist2.Common.DataTransferObjects;
@@ -20,7 +21,6 @@ namespace ShopAssist2.Business.Services {
             return _ctx.StockItems.ToList()
                 .Where(i => i.Deleted == 0)
                 .Select(i => _mapper.Map<ItemDto>(i));
-            //return _ctx.StockItems.ToList().Select(i => _mapper.Map<ItemDto>(i));
         }
         public ItemDto GetItemById(int itemId) {
             var item = _ctx.Transactions.Find(itemId);
@@ -34,7 +34,12 @@ namespace ShopAssist2.Business.Services {
             itemToAdd.DeleteDate = null;
 
             _ctx.StockItems.Add(itemToAdd);
-            _ctx.SaveChanges();
+            try {
+                _ctx.SaveChanges();
+
+            } catch(DbEntityValidationException e) {
+                Console.WriteLine(e);
+            }
         }
 
         public void AddItems(ICollection<ItemDto> items) {
@@ -53,7 +58,6 @@ namespace ShopAssist2.Business.Services {
 
         public IEnumerable<ItemDto> DeleteItems(ICollection<int> itemIds) {
             List<Item> items = _ctx.StockItems.Where(i => itemIds.Contains(i.ItemId)).ToList();
-            //_ctx.StockItems.RemoveRange(items);
             for(var i = 0; i < items.Count; i++) {
                 var deletedItem = items.ToArray()[i];
                 deletedItem.Deleted = 1;

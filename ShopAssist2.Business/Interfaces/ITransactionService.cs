@@ -4,7 +4,7 @@ using ShopAssist2.Common.DataTransferObjects;
 
 namespace ShopAssist2.Business.Interfaces {
     public interface ITransactionService {
-        IEnumerable<TransactionDto> GetAll(bool includeItems = false);
+        IEnumerable<TransactionDto> GetAll(bool includeItems, DateTime forDate);
 
         TransactionDto GetByTransactionId(int transactionId);
 

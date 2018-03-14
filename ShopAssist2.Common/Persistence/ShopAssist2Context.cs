@@ -3,9 +3,11 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using ShopAssist2.Common.Entities;
 using ShopAssist2.Common.Migrations;
 
+//using ShopAssist2.Common.Migrations;
+
 namespace ShopAssist2.Common.Persistence {
     public class ShopAssist2Context : DbContext {
-        public ShopAssist2Context() : base("name=ShopAssist2ConnectionStringLocal") {
+        public ShopAssist2Context() : base("name=SA2CSHemedi") {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<ShopAssist2Context, Configuration>());
         }
 
